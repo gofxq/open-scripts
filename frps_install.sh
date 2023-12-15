@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# 使用命令行参数或默认值
+TOKEN=${1:-$(openssl rand -hex 12)}
+WEB_PASSWORD=${2:-$(openssl rand -hex 12)}
+
 # 定义配置文件路径和日志目录
 DEFAULT_BIND_PORT=11000
 
