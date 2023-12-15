@@ -21,7 +21,7 @@ wget -O "$DOWNLOAD_DIR/frpc_latest.tar.gz" $FRPC_URL
 
 # 解压
 tar zxvf frpc_latest.tar.gz
-FRPC_DIR=$(tar -tzf frpc_latest.tar.gz | head -1 | cut -f1 -d"/")
+FRPC_DIR=$(tar -tzf "$DOWNLOAD_DIR/frpc_latest.tar.gz" | head -1 | cut -f1 -d"/")
 
 # 停止frpc服务如果它已经存在并在运行
 if systemctl is-active --quiet frpc; then
