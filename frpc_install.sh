@@ -20,7 +20,7 @@ echo %FRPC_URL
 wget -O "$DOWNLOAD_DIR/frpc_latest.tar.gz" $FRPC_URL
 
 # 解压
-tar zxvf frpc_latest.tar.gz
+tar zxvf "$DOWNLOAD_DIR/frpc_latest.tar.gz"
 FRPC_DIR=$(tar -tzf "$DOWNLOAD_DIR/frpc_latest.tar.gz" | head -1 | cut -f1 -d"/")
 
 # 停止frpc服务如果它已经存在并在运行
@@ -32,7 +32,7 @@ fi
 cp $FRPC_DIR/frpc /usr/local/bin/
 
 # 清理文件
-rm -rf frpc_latest.tar.gz $FRPC_DIR
+rm -rf "$DOWNLOAD_DIR/frpc_latest.tar.gz" $FRPC_DIR
 
 # 检查配置文件是否存在
 if [ ! -f "$CONFIG_FILE" ]; then
