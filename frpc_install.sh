@@ -2,8 +2,8 @@
 
 # 检查是否以root用户运行
 if [ "$(id -u)" != "0" ]; then
-   echo "此脚本必须以root身份运行" 1>&2
-   exit 1
+    echo "此脚本必须以root身份运行" 1>&2
+    exit 1
 fi
 # 定义下载目录
 DOWNLOAD_DIR="/tmp/downloads"
@@ -34,17 +34,47 @@ cp $FRPC_DIR/frpc /usr/local/bin/
 # 清理文件
 rm -rf frpc_latest.tar.gz $FRPC_DIR
 
-# 检查是否存在配置文件
+# 检查配置文件是否存在
 if [ ! -f "$CONFIG_FILE" ]; then
+    # 创建配置文件目录
     mkdir -p $(dirname $CONFIG_FILE)
-    # 创建默认配置文件
-    echo "server_addr: your_server_addr_here" > $CONFIG_FILE
-    echo "server_port: 7000" >> $CONFIG_FILE
-    # 添加其他必要的配置项到 $CONFIG_FILE
+
+    # 提示用户输入必要的配置信息
+    read -p "请输入 FRP 服务器地址: " frp_server_addr
+    read -p "请输入 FRP 服务器端口: " frp_server_port
+    read -p "请输入 FRP 服务器Token: " frp_server_token
+    hostname=$(hostname)
+    # 从环境变量或ssh配置文件获取SSH端口
+    if [ -n "$SSH_PORT" ]; then
+        ssh_port=$SSH_PORT
+    else
+        ssh_port=$(grep "^Port" /etc/ssh/sshd_config | awk '{print $2}')
+        # 默认SSH端口是22，如果配置文件中没有指定，则使用22
+        ssh_port=${ssh_port:-22}
+    fi
+    read -p "请输入用于FRP的SSH远程端口: " frp_ssh_port
+
+    # 生成配置文件
+    cat <<EOF >$CONFIG_FILE
+serverAddr: $frp_server_addr
+serverPort: $frp_server_port
+auth:
+  token: $frp_server_token
+proxies:
+  - name: ssh.$hostname
+    type: tcp
+    localIP: 127.0.0.1
+    localPort: $ssh_port
+    remotePort: $frp_ssh_port
+EOF
+
+    echo "配置文件创建成功，位于 $CONFIG_FILE"
+else
+    echo "配置文件已存在，跳过创建步骤。"
 fi
 
 # 创建或更新 Systemd 服务文件
-cat <<EOF > $SERVICE_FILE
+cat <<EOF >$SERVICE_FILE
 [Unit]
 Description=frp client service
 After = network.target syslog.target
