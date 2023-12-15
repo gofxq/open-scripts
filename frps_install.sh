@@ -13,13 +13,13 @@ if [ ! -f "$CONFIG_FILE" ]; then
     mkdir -p $(dirname $LOG_DIR)
 
     # 提示用户输入token，如果为空则生成随机token
-    read -p "请输入 FRP 服务器Token (留空将自动生成): " RANDOM_TOKEN
+    read -p "请输入 FRP 服务器Token (留空将自动生成): " 
     if [ -z "$RANDOM_TOKEN" ]; then
         RANDOM_TOKEN=$(openssl rand -hex 12)
     fi
 
     # 提示用户输入web密码，如果为空则生成随机密码
-    read -p "请输入 FRP Web 管理界面密码 (留空将自动生成): " RANDOM_WEB_PASSWORD
+    read -p "请输入 FRP Web 管理界面密码 (留空将自动生成): " 
     if [ -z "$RANDOM_WEB_PASSWORD" ]; then
         RANDOM_WEB_PASSWORD=$(openssl rand -hex 12)
     fi
@@ -66,9 +66,9 @@ mkdir -p "$DOWNLOAD_DIR"
 FRPS_LATEST_URL=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | grep "browser_download_url.*frp_.*_linux_amd64.tar.gz" | cut -d '"' -f 4)
 wget -O "$DOWNLOAD_DIR/frps_latest.tar.gz" "$FRPS_LATEST_URL"
 
-# 解压并安装
 systemctl stop frps
 
+# 解压并安装
 tar zxvf "$DOWNLOAD_DIR/frps_latest.tar.gz" -C "$DOWNLOAD_DIR"
 FRPS_DIR=$(tar -tzf "$DOWNLOAD_DIR/frps_latest.tar.gz" | head -1 | cut -f1 -d"/")
 cp "$DOWNLOAD_DIR/$FRPS_DIR/frps" /usr/local/bin/
