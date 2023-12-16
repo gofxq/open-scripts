@@ -1,0 +1,46 @@
+@startuml
+skinparam linetype ortho
+
+' 定义物理机器为包
+package "ETH\n6c12t64g\nWin10 LTSC" as ETH {
+    node "iKuai\n1h1g\n主路由\n(wan_usb)" as iKuai
+    node "OpenWRT\n1h1g\n透明网关\n(lan)" as OpenWRT
+    node "ueth\n6c16g\nUbuntu 22" as ueth
+    node "win10hv\n4h8g\nWin10 LTSC" as win10hv
+}
+
+package "AMD\n12c24t64g\nWin10 LTSC" as AMD {
+    node "uamd\n12c16g\nUbuntu" as uamd
+}
+
+package  "iOS Devices" as ios {
+    node "Node 1" as Node1
+}
+
+package "Android Devices"  as android {
+    node "Node 2" as Node2
+}
+
+' 定义其他物理设备
+node "m1mba\n16g\nMacOS" as m1mba
+node "m2mbp\n32g\nMacOS" as m2mbp
+cloud "ax3k\nWiFi 1G" as ax3k
+cloud "cmcc\n光猫" as cmcc
+
+' 定义网络连接
+cmcc -down=> iKuai : "直连"
+iKuai -down=> OpenWRT : "主路由"
+
+OpenWRT -down=> ueth : "Wire10G"
+OpenWRT -down=> win10hv : "Wire10G"
+OpenWRT -up=> AMD : "Wire1G"
+OpenWRT -up=> uamd : "Wire1G"
+OpenWRT --down=> ax3k : "Wire1G"
+
+
+ax3k -left-> m1mba : ""
+ax3k -left-> m2mbp : ""
+ax3k -down-> android : ""
+ax3k -down-> ios : ""
+
+@enduml
