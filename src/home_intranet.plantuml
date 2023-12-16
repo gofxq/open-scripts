@@ -1,5 +1,6 @@
 @startuml
 skinparam linetype ortho
+!theme reddress-lightblue
 
 ' 定义物理机器为包
 package "ETH\n6c12t64g\nWin10 LTSC" as ETH {
@@ -25,10 +26,10 @@ package "Android Devices"  as android {
 node "m1mba\n16g\nMacOS" as m1mba
 node "m2mbp\n32g\nMacOS" as m2mbp
 cloud "ax3k\nWiFi 1G" as ax3k
-cloud "cmcc\n光猫" as cmcc
+cloud "CMCC\n光猫" as CMCC
 
 ' 定义网络连接
-cmcc -down=> iKuai : "直连"
+CMCC -down=> iKuai : "直连"
 iKuai -down=> OpenWRT : "主路由"
 
 OpenWRT -down=> ueth : "Wire10G"
@@ -38,9 +39,9 @@ OpenWRT -up=> uamd : "Wire1G"
 OpenWRT --down=> ax3k : "Wire1G"
 
 
-ax3k -left-> m1mba : ""
-ax3k -left-> m2mbp : ""
-ax3k -down-> android : ""
-ax3k -down-> ios : ""
+ax3k -down-> m1mba : "Wire"
+ax3k -left-> m2mbp : "WiFi"
+ax3k -right-> android : "WiFi"
+ax3k -right-> ios : "WiFi"
 
 @enduml
