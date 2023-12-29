@@ -84,6 +84,10 @@ Wants = network.target
 Type=simple
 User=nobody
 ExecStart=/usr/local/bin/frpc -c $CONFIG_FILE
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+RestartPreventExitStatus=SIGKILL
 
 [Install]
 WantedBy=multi-user.target

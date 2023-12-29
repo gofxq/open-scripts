@@ -90,6 +90,10 @@ Wants=network.target
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/frps -c $CONFIG_FILE
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+RestartPreventExitStatus=SIGKILL
 
 [Install]
 WantedBy=multi-user.target
