@@ -66,9 +66,19 @@ DOWNLOAD_DIR="/tmp/frp_download"
 # 创建下载目录
 mkdir -p "$DOWNLOAD_DIR"
 
-# 下载最新版本的frps（假设是linux amd64）
-FRPS_LATEST_URL=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | grep "browser_download_url.*frp_.*_linux_amd64.tar.gz" | cut -d '"' -f 4)
-wget -O "$DOWNLOAD_DIR/frps_latest.tar.gz" "$FRPS_LATEST_URL"
+
+# 检查frp*.tar.gz文件是否已经存在
+if ls "$DOWNLOAD_DIR/frp*.tar.gz" 1> /dev/null 2>&1; then
+    echo "发现已下载的frpc文件，正在重命名..."
+    # 重命名现有的frp*.tar.gz文件
+    mv "$DOWNLOAD_DIR/frp*.tar.gz" "$DOWNLOAD_DIR/frpc_latest.tar.gz"
+else
+    # 下载最新版本的frps（假设是linux amd64）
+    FRPS_LATEST_URL=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | grep "browser_download_url.*frp_.*_linux_amd64.tar.gz" | cut -d '"' -f 4)
+    echo "正在下载frpc..."
+    # 下载最新版本的frpc
+    wget -O "$DOWNLOAD_DIR/frps_latest.tar.gz" "$FRPS_LATEST_URL"
+fi
 
 systemctl stop frps
 
