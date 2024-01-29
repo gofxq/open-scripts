@@ -1,6 +1,10 @@
 
 # [家庭网络拓扑](home_intranet%2Fhome_intranet.md)
 
+# 添加sudo用户
+sudo adduser u
+sudo usermod -aG sudo u
+
 # 一键安装frpc服务
 ```bash
 curl -sL https://raw.githubusercontent.com/gofxq/scripts/master/frpc_install.sh  -o /tmp/to_run.sh
