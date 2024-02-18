@@ -1,5 +1,11 @@
-
 # [家庭网络拓扑](home_intranet%2Fhome_intranet.md)
+
+# 配置goproxy
+
+```bash
+go env -w GO111MODULE=on
+go env -w GOPROXY=https://goproxy.cn,direct
+```
 
 # 添加sudo用户
 sudo adduser u
