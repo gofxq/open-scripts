@@ -1,33 +1,29 @@
 #!/bin/bash
 
-# 检查是否为 root 用户，如果不是则切换到 root 用户
-if [ "$(id -u)" -ne 0 ]; then
-    echo "当前不是root用户，正在切换到sudo模式..."
+# 确保脚本以 root 权限运行
+if [ "$(id -u)" != "0" ]; then
+    echo "不是 root 用户，将切换至 root 用户执行..."
     exec sudo -i bash "$0" "$@"
-    exit
 fi
 
-# 更新系统和安装必要的软件包
-apt update && apt upgrade -y
-apt install -y curl vim wget gnupg dpkg apt-transport-https lsb-release ca-certificates
+# 退出脚本如果任何命令执行失败
+set -e
 
-# 添加 Docker 的 GPG 密钥
-curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# 更新系统软件包并安装必要的工具
+apt-get update && apt-get upgrade -y
+apt-get install -y curl gnupg lsb-release
 
-# 添加 Docker 的 APT 源
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+# 添加 Docker 的官方 GPG 密钥
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-# 安装 Docker 引擎
-apt update
-apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-ce-rootless-extras
+# 设置 Docker APT 源
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
 
-# 获取当前用户名并添加到 docker 组
-CURRENT_USER=$(logname)
-echo "add $CURRENT_USER to docker group"
-usermod -aG docker "$CURRENT_USER"
+# 安装 Docker CE, CLI 和其他必要的组件
+apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-ce-rootless-extras
 
-# 配置 Docker
-cat > /etc/docker/daemon.json << EOF
+# 配置 Docker 守护进程的日志和网络设置
+cat > /etc/docker/daemon.json <<EOF
 {
     "log-driver": "json-file",
     "log-opts": {
@@ -41,7 +37,12 @@ cat > /etc/docker/daemon.json << EOF
 }
 EOF
 
-# 重启 Docker 服务以应用更改
+# 重启 Docker 服务来应用配置更改
 systemctl restart docker
 
-echo "Docker 安装和配置已完成。请重新登录以应用用户组更改。"
+# 添加当前用户到 Docker 用户组
+CURRENT_USER=$(logname)
+usermod -aG docker "$CURRENT_USER"
+
+# 提示用户重新登录以应用组更改
+echo "Docker 安装并配置已完成。请重新登录以使组更改生效。"
