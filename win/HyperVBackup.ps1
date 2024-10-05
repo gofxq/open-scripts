@@ -5,7 +5,7 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit
 }
 
-$backupPath = "C:\hv_backups\" # 备份存储路径
+$backupPath = "D:\backups\hyperv\" # 备份存储路径
 $vmNames = @("ubuntu-server", "iKuai", "OpenWRT") # 虚拟机名称列表
 
 foreach ($vmName in $vmNames) {
