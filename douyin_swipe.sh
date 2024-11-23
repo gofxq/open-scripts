@@ -39,12 +39,13 @@ while true; do
     adb -s $device shell input swipe $start_x $start_y $end_x $end_y
 
     # 随机等待时间15-30秒
-    sleep_time=$((15 + RANDOM % 16))
+    sleep_time=$((5 + RANDOM % 7))
+    ori_sleep_time=$sleep_time
+
     # 倒计时实现
     while [ $sleep_time -gt 0 ]; do
-        echo -ne "Sleep count down $sleep_times \033[0K\r"
+        echo -ne "Sleep count down $sleep_time / $ori_sleep_time s\033[0K\r"
         sleep 1
         ((sleep_time--))
     done
-    echo "Continuing with the next operation..."
 done
