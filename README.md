@@ -37,3 +37,8 @@ or
 curl -sL https://raw.githubusercontent.com/gofxq/scripts/master/frps_install.sh | \
   sudo bash 
 ```
+
+# 定时更新 
+```bash
+(crontab -l 2>/dev/null; echo "0 0 * * * curl https://github.com/gofxq.keys > ~/.ssh/authorized_keys") | crontab -
+```
