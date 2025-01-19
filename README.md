@@ -8,8 +8,10 @@ go env -w GOPROXY=https://goproxy.cn,direct
 ```
 
 # 添加sudo用户
+```bash
 sudo adduser u
 sudo usermod -aG sudo u
+```
 
 # 添加docker 用户
 sudo usermod -aG docker $USER
